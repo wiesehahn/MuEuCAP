@@ -1,0 +1,215 @@
+---
+title: "Hemispherical Photo Analysis"
+author: "Jens Wiesehahn"
+date: "August 2, 2019"
+output: 
+  html_document:
+    theme: paper
+    code_folding: hide
+    toc: true
+    toc_float: true
+    collapsed: false 
+    number_sections: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(dev="png")
+```
+
+```{r packages, message=FALSE, warning=FALSE}
+library(readr)
+library(tidyverse)
+library(data.table)
+library(kableExtra)
+library(here)
+```
+
+-----------------
+
+## Taking Images
+
+The images are taken with the 360-degree camera RICOH THETA S [(*see here*)](https://theta360.com/de/about/theta/s.html). The camera has two inbuilt lenses, producing a 360-degree image.  
+
+- At each plot 4 images are made. 
+- One image directly at the centre of the plot. 
+- Three images around the centre at a distance of 15m distributed evenly in all directlions (0, 120, 240 degrees). 
+
+To capture the sorrounding as good as possible and to cover the hemisphere in all directions around the plot centre, the camera is held vertically above the head.  
+
+Naming of the images should be consistent as **CityClusterPlotnumber_Imagenumber** (e.g. MDLDT01_01).  
+
+
+```{r, out.width = "300px"}
+knitr::include_graphics(here("raw_data/img/plotdesign.png"))
+```
+
+
+-----------------
+
+
+## Image Analysis 
+
+The images are converted into binary images and gap fraction is calculated automatically using ImageJ and the hemispherical_2.0 macro. 
+
+ImageJ is a Java-based image processing program developed at the National Institutes of Health and the Laboratory for Optical and Computational Instrumentation (LOCI, University of Wisconsin). It is open-source and can be downloaded for free here.  
+[*Download ImageJ*](https://imagej.nih.gov/ij/download.html)  
+  
+Hemispherical_2.0 is a macro for ImageJ that batch processes large quantities of both digital hemispherical and non-hemispherical canopy photographs at comparatively faster computational speeds. It was developed at the *Institute of Forest Inventory and Remote Sensing* in Goettigen. It can be downloaded here.  
+[*Download Hemispherical_2.0*](http://www.uni-goettingen.de/de/hemispherical+2.0++%28download%2c+583+kb%29/508293.html)  
+  
+The manual is included in the download above and can also be seen seperately [here](https://www.researchgate.net/publication/274011723_Hemispherical_20_-_Batch_processing_hemispherical_and_canopy_photographs_with_ImageJ_-_User_Manual).  
+
+For processing the images with ImageJ and the hemispherical_2.0 macro the images have to be masked in a first step. 
+In ImageJ:
+
+1. Clicking on **Plugins** -> **Hemispherical_2.0**
+2. select the **input folder** containing the hemispherical photos
+3. select the **output folder** where processed images should be stored
+4. click **rectangular selection** tool and select image part to be processed.  
+(In our case we choose the upper half of the first image since we are interested in the sky/canopy and not the ground)
+5. click **Ok** to start batch processing  
+(this might not work with several hundred images, in this case process the images in chunks)
+6. **save results** file 
+7. **finished**
+
+### Visual Comparison {.tabset .tabset-pills}
+
+#### before {-}
+```{r, out.width = "100%"}
+knitr::include_graphics(here("raw_data/img/MDLDT04_1_xmp_e.jpg"))
+```
+
+
+#### after {-}
+```{r, out.width = "100%"}
+knitr::include_graphics(here("output_data/img/MDLDT04_1_xmp_e_T.jpg"))
+```
+
+### Numerical Results
+
+```{r read.data, message=FALSE, warning=FALSE}
+results_MDL <- read_csv(here("output_data/doc/hemiphotos_results_MDL.csv"))
+
+results_MAW <- read_csv(here("output_data/doc/hemiphotos_results_MAW.csv"))
+
+results_MGZ <- read_csv(here("output_data/doc/hemiphotos_results_MGZ.csv"))
+
+# merge data
+hemi <- bind_rows(results_MDL, results_MAW, results_MGZ)
+
+# get plot data from image name
+hemi <- hemi %>%
+  mutate(city = as.factor(substr(photo, start = 1, stop = 3)),
+         cluster = as.factor(substr(photo, start = 4, stop = 5)),
+         plot = as.factor(substr(photo, start = 6, stop = 7)))
+
+```
+
+
+
+#### Output table from Hemispherical_2.0
+
+```{r table, message=FALSE, warning=FALSE}
+head(hemi) %>% 
+  select(-city, -cluster, -plot) %>%
+  kable(escape = F) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 12, fixed_thead = T) 
+```
+
+#### Simple Analysis Example
+
+Output data can be analyzed and plotted by city and cluster for example. 
+
+
+##### Average gap fraction per city and cluster
+
+The gap fraction is a metric for the openness of the plots, hence plots in the city or in forested sites should have lower gap fractions than agricultural dominated sites  
+
+```{r plot.gapfraction, message=FALSE, warning=FALSE}
+p <- ggplot(hemi, aes(x=cluster, y=gap_fraction)) +
+  geom_boxplot() +
+  facet_grid(city ~ .) +
+  theme_bw()
+
+print(p)
+```
+
+##### Average number of gaps per city and cluster
+
+The number of gaps might be an indicator for structural diversity. As this is dependend on a lot of factors this metric should be interpreted carefully.
+```{r plot.gapnumber, message=FALSE, warning=FALSE}
+p <- ggplot(hemi, aes(x=cluster, y=no_of_gaps)) +
+  geom_boxplot() +
+  facet_grid(city ~ .) +
+  theme_bw()
+
+print(p)
+```
+
+#### Combination with other data
+
+In a further step this data can be merged with observations from the field or remote sensing data to enable a deeper anaylsis.
+
+```{r merge.birds, message=FALSE, warning=FALSE}
+# read bird data
+birddata <- read_csv(here("raw_data/doc/2019_Pointcount_data_MGZ_MAW.csv"), 
+    col_types = cols(Day = col_skip(), Elevation = col_skip(), 
+        Month = col_skip(), Sight = col_character(), 
+        Temperature = col_skip(), Year = col_skip(), 
+        hours = col_skip(), minutes = col_skip()))
+
+# group by plot
+hemi.grouped <- hemi %>%
+  group_by(city, cluster, plot) %>%
+  summarise(no_of_images= n(),
+            mean_gap_fraction = mean(gap_fraction, na.rm = T),
+         mean_no_of_gaps = mean(no_of_gaps, na.rm = T),
+         mean_gap_area = mean(gap_area, na.rm = T))
+
+# get plot data from image name
+birddata <- birddata %>%
+  mutate(city = as.factor(substr(Point, start = 1, stop = 3)),
+         cluster = as.factor(substr(Point, start = 4, stop = 5)),
+         plot = as.factor(substr(Point, start = 6, stop = 7)))
+
+hemibird <- merge(hemi.grouped, birddata, by=c("city","cluster", "plot"))
+
+```
+
+##### Number of bird counts by gap fraction
+
+```{r plot.birdcount, message=FALSE, warning=FALSE}
+p <- hemibird %>%
+  group_by(city, cluster, plot) %>%
+  summarise(no_of_species = n_distinct(English_Name),
+            bird_count = sum(Count),
+            mean_no_of_gaps = mean(mean_no_of_gaps, na.rm = T),
+            mean_gap_area = mean(mean_gap_area, na.rm = T),
+            mean_gap_fraction = mean(mean_gap_fraction, na.rm = T)) %>%
+  
+  ggplot(aes(x=mean_gap_fraction, y=bird_count)) +
+  geom_point(aes(color= city)) +
+  theme_bw()
+
+print(p)
+```
+
+##### Number of bird species by number of gaps
+
+```{r plot.birdspecies, message=FALSE, warning=FALSE}
+p <- hemibird %>%
+  group_by(city, cluster, plot) %>%
+  summarise(no_of_species = n_distinct(English_Name),
+            bird_count = sum(Count),
+            mean_no_of_gaps = mean(mean_no_of_gaps, na.rm = T),
+            mean_gap_area = mean(mean_gap_area, na.rm = T),
+            mean_gap_fraction = mean(mean_gap_fraction, na.rm = T)) %>%
+  
+  ggplot(aes(x=mean_no_of_gaps, y=no_of_species)) +
+  geom_point(aes(color= city)) +
+  theme_bw()
+
+print(p)
+```
+
