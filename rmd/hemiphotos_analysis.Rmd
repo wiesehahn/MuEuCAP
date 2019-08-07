@@ -1,15 +1,19 @@
 ---
 title: "Hemispherical Photo Analysis"
 author: "Jens Wiesehahn"
-date: "August 2, 2019"
+date: "`r format(Sys.time(), '%B %e, %Y')`"
 output: 
   html_document:
+    fig_caption: yes
     theme: paper
     code_folding: hide
     toc: true
     toc_float: true
     collapsed: false 
     number_sections: false
+    css: style.css
+    includes:
+      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
@@ -37,10 +41,10 @@ The images are taken with the 360-degree camera RICOH THETA S [(*see here*)](htt
 
 To capture the sorrounding as good as possible and to cover the hemisphere in all directions around the plot centre, the camera is held vertically above the head.  
 
-Naming of the images should be consistent as **CityClusterPlotnumber_Imagenumber** (e.g. MDLDT01_01).  
+Naming of the images should be consistent as *CityClusterPlotnumber_Imagenumber* (e.g. MDLDT01_01).  
 
 
-```{r, out.width = "300px"}
+```{r, out.width = "300px", fig.cap="Plotdesign"}
 knitr::include_graphics(here("raw_data/img/plotdesign.png"))
 ```
 
@@ -52,16 +56,23 @@ knitr::include_graphics(here("raw_data/img/plotdesign.png"))
 
 The images are converted into binary images and gap fraction is calculated automatically using ImageJ and the hemispherical_2.0 macro. 
 
-ImageJ is a Java-based image processing program developed at the National Institutes of Health and the Laboratory for Optical and Computational Instrumentation (LOCI, University of Wisconsin). It is open-source and can be downloaded for free here.  
+
+### Software
+
+**ImageJ** is a Java-based image processing program developed at the National Institutes of Health and the Laboratory for Optical and Computational Instrumentation (LOCI, University of Wisconsin). It is open-source and can be downloaded for free here.  
 [*Download ImageJ*](https://imagej.nih.gov/ij/download.html)  
   
-Hemispherical_2.0 is a macro for ImageJ that batch processes large quantities of both digital hemispherical and non-hemispherical canopy photographs at comparatively faster computational speeds. It was developed at the *Institute of Forest Inventory and Remote Sensing* in Goettigen. It can be downloaded here.  
+**Hemispherical_2.0** is a macro for ImageJ that batch processes large quantities of both digital hemispherical and non-hemispherical canopy photographs at comparatively faster computational speeds. It was developed at the *Institute of Forest Inventory and Remote Sensing* in Goettigen and can be downloaded here.  
 [*Download Hemispherical_2.0*](http://www.uni-goettingen.de/de/hemispherical+2.0++%28download%2c+583+kb%29/508293.html)  
   
 The manual is included in the download above and can also be seen seperately [here](https://www.researchgate.net/publication/274011723_Hemispherical_20_-_Batch_processing_hemispherical_and_canopy_photographs_with_ImageJ_-_User_Manual).  
 
-For processing the images with ImageJ and the hemispherical_2.0 macro the images have to be masked in a first step. 
-In ImageJ:
+
+### Processing
+
+For processing the images with ImageJ and the hemispherical_2.0 macro the images have to be masked in a first step. Then they are converted to binary (sky / no sky) images and gap statistics are derived.  
+
+**Workflow in ImageJ:**  
 
 1. Clicking on **Plugins** -> **Hemispherical_2.0**
 2. select the **input folder** containing the hemispherical photos
@@ -73,16 +84,19 @@ In ImageJ:
 6. **save results** file 
 7. **finished**
 
+
+## Results
+
 ### Visual Comparison {.tabset .tabset-pills}
 
 #### before {-}
-```{r, out.width = "100%"}
+```{r, out.width = "100%", fig.cap="RGB-Image in flat projection as taken in the field"}
 knitr::include_graphics(here("raw_data/img/MDLDT04_1_xmp_e.jpg"))
 ```
 
 
 #### after {-}
-```{r, out.width = "100%"}
+```{r, out.width = "100%", fig.cap="Binary Black and White Image after processing"}
 knitr::include_graphics(here("output_data/img/MDLDT04_1_xmp_e_T.jpg"))
 ```
 
@@ -212,4 +226,3 @@ p <- hemibird %>%
 
 print(p)
 ```
-
