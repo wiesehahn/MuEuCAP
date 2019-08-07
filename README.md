@@ -1,9 +1,9 @@
 # MuEuCAP
-enhancing myanmar's higher education system
+**'Supporting the modernisation, accessibility, and internationalisation of environmental protection in Myanmar’s higher education sector'**
 
-EU funded project 
+*EU funded project* 
 
-'Supporting the modernisation, accessibility, and internationalisation of environmental protection in Myanmar’s higher education sector'
+project website: https://wiesehahn.github.io/MuEuCAP/
 
 ## Folder structure
 
