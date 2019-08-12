@@ -1,0 +1,6 @@
+files - source
+
+birds-all - Data_birds_all received at 20190808 via mail
+point-list - point_list from server UFFE
+project - Project from server UFFE
+remote-sensing-variables - remoteSensingVariables from server UFFE

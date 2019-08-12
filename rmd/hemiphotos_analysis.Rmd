@@ -26,6 +26,8 @@ library(readr)
 library(tidyverse)
 library(data.table)
 library(kableExtra)
+library(readxl)
+library(plotly)
 library(here)
 ```
 
@@ -116,10 +118,17 @@ hemi <- bind_rows(results_MDL, results_MAW, results_MGZ)
 hemi <- hemi %>%
   mutate(city = as.factor(substr(photo, start = 1, stop = 3)),
          cluster = as.factor(substr(photo, start = 4, stop = 5)),
-         plot = as.factor(substr(photo, start = 6, stop = 7)))
-
+         plot = as.factor(substr(photo, start = 6, stop = 7))) %>%
+  # change cluster levels to be more meaningful and to be compatible with bird data
+  mutate(cluster = recode(cluster, RP = "Paddy field", MH = "Hillside", DT = "Downtown", UC= "University campus"))
 ```
 
+```{r colscale, message=FALSE, warning=FALSE}
+# create color scale to map levels consistent in plots
+myColors <- scales::viridis_pal(option= "D")(nlevels(hemi$cluster))
+names(myColors) <- levels(hemi$cluster)
+colscale <- scale_colour_manual(name = "grp",values = myColors)
+```
 
 
 #### Output table from Hemispherical_2.0
@@ -131,7 +140,7 @@ head(hemi) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 12, fixed_thead = T) 
 ```
 
-#### Simple Analysis Example
+#### Simple Analysis Example {.tabset .tabset-pills}
 
 Output data can be analyzed and plotted by city and cluster for example. 
 
@@ -141,39 +150,33 @@ Output data can be analyzed and plotted by city and cluster for example.
 The gap fraction is a metric for the openness of the plots, hence plots in the city or in forested sites should have lower gap fractions than agricultural dominated sites  
 
 ```{r plot.gapfraction, message=FALSE, warning=FALSE}
-p <- ggplot(hemi, aes(x=cluster, y=gap_fraction)) +
-  geom_boxplot() +
-  facet_grid(city ~ .) +
-  theme_bw()
-
-print(p)
+hemi %>%
+  plot_ly(y = ~gap_fraction, 
+          color = ~cluster,
+          colors = myColors, 
+          type = "box")
 ```
 
 ##### Average number of gaps per city and cluster
 
 The number of gaps might be an indicator for structural diversity. As this is dependend on a lot of factors this metric should be interpreted carefully.
 ```{r plot.gapnumber, message=FALSE, warning=FALSE}
-p <- ggplot(hemi, aes(x=cluster, y=no_of_gaps)) +
-  geom_boxplot() +
-  facet_grid(city ~ .) +
-  theme_bw()
-
-print(p)
+hemi %>%
+  plot_ly(y = ~no_of_gaps, 
+          color = ~cluster,
+          colors = myColors, 
+          type = "box")
 ```
 
-#### Combination with other data
+#### Combination with bird data  {.tabset .tabset-pills}
 
-In a further step this data can be merged with observations from the field or remote sensing data to enable a deeper anaylsis.
+Do relations between bird count data and hemispherical photos exist?
 
 ```{r merge.birds, message=FALSE, warning=FALSE}
 # read bird data
-birddata <- read_csv(here("raw_data/doc/2019_Pointcount_data_MGZ_MAW.csv"), 
-    col_types = cols(Day = col_skip(), Elevation = col_skip(), 
-        Month = col_skip(), Sight = col_character(), 
-        Temperature = col_skip(), Year = col_skip(), 
-        hours = col_skip(), minutes = col_skip()))
+birddata <- read_excel(path= here("raw_data/doc/birds-all.xlsx"), sheet = "ALL")
 
-# group by plot
+# group hemispherical data by plot
 hemi.grouped <- hemi %>%
   group_by(city, cluster, plot) %>%
   summarise(no_of_images= n(),
@@ -183,10 +186,14 @@ hemi.grouped <- hemi %>%
 
 # get plot data from image name
 birddata <- birddata %>%
+  select(Country, City, Habitat, Point, English_Name, Count) %>%
   mutate(city = as.factor(substr(Point, start = 1, stop = 3)),
          cluster = as.factor(substr(Point, start = 4, stop = 5)),
-         plot = as.factor(substr(Point, start = 6, stop = 7)))
+         plot = as.factor(substr(Point, start = 6, stop = 7))) %>%
+  # change cluster levels to be more meaningful and to be compatible with hemispherical data
+  mutate(cluster = recode(cluster, PF = "Paddy field", MH = "Hillside", DT = "Downtown", UC= "University campus"))
 
+# merge bird data and hemispherical data
 hemibird <- merge(hemi.grouped, birddata, by=c("city","cluster", "plot"))
 
 ```
@@ -194,7 +201,8 @@ hemibird <- merge(hemi.grouped, birddata, by=c("city","cluster", "plot"))
 ##### Number of bird counts by gap fraction
 
 ```{r plot.birdcount, message=FALSE, warning=FALSE}
-p <- hemibird %>%
+
+hemibird %>%
   group_by(city, cluster, plot) %>%
   summarise(no_of_species = n_distinct(English_Name),
             bird_count = sum(Count),
@@ -202,17 +210,23 @@ p <- hemibird %>%
             mean_gap_area = mean(mean_gap_area, na.rm = T),
             mean_gap_fraction = mean(mean_gap_fraction, na.rm = T)) %>%
   
-  ggplot(aes(x=mean_gap_fraction, y=bird_count)) +
-  geom_point(aes(color= city)) +
-  theme_bw()
+  plot_ly(x= ~mean_gap_fraction, 
+          y= ~bird_count, 
+          color= ~cluster,
+          colors = myColors,
+           # Hover text:
+          text = ~paste("Number of birds: ", bird_count, 
+                        "<br>Number of species:", no_of_species, 
+                        "<br>Gap fraction:", mean_gap_fraction, 
+                        "<br>Number of gaps:", mean_no_of_gaps)) %>%
+  add_markers()
 
-print(p)
 ```
 
 ##### Number of bird species by number of gaps
 
 ```{r plot.birdspecies, message=FALSE, warning=FALSE}
-p <- hemibird %>%
+hemibird %>%
   group_by(city, cluster, plot) %>%
   summarise(no_of_species = n_distinct(English_Name),
             bird_count = sum(Count),
@@ -220,9 +234,70 @@ p <- hemibird %>%
             mean_gap_area = mean(mean_gap_area, na.rm = T),
             mean_gap_fraction = mean(mean_gap_fraction, na.rm = T)) %>%
   
-  ggplot(aes(x=mean_no_of_gaps, y=no_of_species)) +
-  geom_point(aes(color= city)) +
-  theme_bw()
+  plot_ly(x= ~mean_no_of_gaps, 
+          y= ~no_of_species,
+          color= ~cluster,
+          colors = myColors,
+           # Hover text:
+          text = ~paste("Number of birds: ", bird_count, 
+                        "<br>Number of species:", no_of_species, 
+                        "<br>Gap fraction:", mean_gap_fraction, 
+                        "<br>Number of gaps:", mean_no_of_gaps)) %>%
+  add_markers()
 
-print(p)
 ```
+
+#### Combination with other data
+
+In a further step this data can be merged with observations from the field or remote sensing data to enable a deeper anaylsis.
+
+```{r merge.remote-sensing, message=FALSE, warning=FALSE}
+# read remote sensing variables
+rs <- read_csv(file = here("raw_data/doc/remote-sensing-variables.csv"))
+
+# get plot data from image name
+rs <- rs %>%
+  filter(buffer_radius == 125) %>%
+  mutate(city = as.factor(substr(plot_id, start = 1, stop = 3)),
+         cluster = as.factor(substr(plot_id, start = 4, stop = 5)),
+         plot = as.factor(substr(plot_id, start = 6, stop = 7))) %>%
+  # change cluster levels to be more meaningful and to be compatible with hemispherical data
+  mutate(cluster = recode(cluster, RP = "Paddy field", MH = "Hillside", DT = "Downtown", UC= "University campus"))
+
+birddata_grouped <- birddata %>%
+  group_by(city, cluster, plot) %>%
+  summarise(no_of_species = n_distinct(English_Name),
+            bird_count = sum(Count))
+
+# merge bird data and hemispherical data
+rsbird <- merge(rs, birddata_grouped, by=c("city","cluster", "plot"))
+
+```
+
+##### Mean NDVI per cluster 
+(125m radius around plot center)  
+
+```{r plot.ndvi, message=FALSE, warning=FALSE}
+rsbird %>%
+  plot_ly(y = ~NDVI_mean, 
+          color = ~cluster,
+          colors = myColors, 
+          type = "box")
+```
+
+##### Number of bird species by mean NDVI
+
+```{r plot.rs-birds, message=FALSE, warning=FALSE}
+rsbird %>%
+  plot_ly(x= ~NDVI_mean, 
+          y= ~no_of_species,
+          color= ~cluster,
+          colors = myColors,
+           # Hover text:
+          text = ~paste("Number of birds: ", bird_count, 
+                        "<br>Number of species:", no_of_species)) %>%
+  add_markers()
+```
+
+
+
