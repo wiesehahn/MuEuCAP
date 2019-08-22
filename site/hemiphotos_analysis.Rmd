@@ -1,19 +1,5 @@
 ---
 title: "Hemispherical Photo Analysis"
-author: "Jens Wiesehahn"
-date: "`r format(Sys.time(), '%B %e, %Y')`"
-output: 
-  html_document:
-    fig_caption: yes
-    theme: paper
-    code_folding: hide
-    toc: true
-    toc_float: true
-    collapsed: false 
-    number_sections: false
-    css: style.css
-    includes:
-      after_body: footer.html
 ---
 
 ```{r setup, include=FALSE}
@@ -22,18 +8,25 @@ knitr::opts_chunk$set(dev="png")
 ```
 
 ```{r packages, message=FALSE, warning=FALSE}
-library(readr)
-library(tidyverse)
-library(data.table)
-library(kableExtra)
-library(readxl)
-library(plotly)
-library(here)
+usePackage <- function(p) 
+{
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE)
+  require(p, character.only = TRUE)
+}
+
+usePackage("readr")
+usePackage("tidyverse")
+usePackage("data.table")
+usePackage("kableExtra")
+usePackage("readxl")
+usePackage("plotly")
+usePackage("here")
 ```
 
 -----------------
 
-## Taking Images
+# Taking Images
 
 The images are taken with the 360-degree camera RICOH THETA S [(*see here*)](https://theta360.com/de/about/theta/s.html). The camera has two inbuilt lenses, producing a 360-degree image.  
 
@@ -46,20 +39,20 @@ To capture the sorrounding as good as possible and to cover the hemisphere in al
 Naming of the images should be consistent as *CityClusterPlotnumber_Imagenumber* (e.g. MDLDT01_01).  
 
 
-```{r, out.width = "300px", fig.cap="Plotdesign"}
-knitr::include_graphics(here("raw_data/img/plotdesign.png"))
+```{r, out.width = "300px", fig.cap="plot design used for hemispherical photo collection"}
+knitr::include_graphics("https://github.com/wiesehahn/MuEuCAP/blob/master/raw_data/img/plotdesign.png?raw=true")
 ```
 
 
 -----------------
 
 
-## Image Analysis 
+# Image Analysis 
 
 The images are converted into binary images and gap fraction is calculated automatically using ImageJ and the hemispherical_2.0 macro. 
 
 
-### Software
+## Software
 
 **ImageJ** is a Java-based image processing program developed at the National Institutes of Health and the Laboratory for Optical and Computational Instrumentation (LOCI, University of Wisconsin). It is open-source and can be downloaded for free here.  
 [*Download ImageJ*](https://imagej.nih.gov/ij/download.html)  
@@ -70,7 +63,7 @@ The images are converted into binary images and gap fraction is calculated autom
 The manual is included in the download above and can also be seen seperately [here](https://www.researchgate.net/publication/274011723_Hemispherical_20_-_Batch_processing_hemispherical_and_canopy_photographs_with_ImageJ_-_User_Manual).  
 
 
-### Processing
+## Processing
 
 For processing the images with ImageJ and the hemispherical_2.0 macro the images have to be masked in a first step. Then they are converted to binary (sky / no sky) images and gap statistics are derived.  
 
@@ -87,22 +80,22 @@ For processing the images with ImageJ and the hemispherical_2.0 macro the images
 7. **finished**
 
 
-## Results
+# Results
 
-### Visual Comparison {.tabset .tabset-pills}
+## Visual Comparison {.tabset .tabset-pills}
 
-#### before {-}
+### before {-}
 ```{r, out.width = "100%", fig.cap="RGB-Image in flat projection as taken in the field"}
-knitr::include_graphics(here("raw_data/img/MDLDT04_1_xmp_e.jpg"))
+knitr::include_graphics("https://github.com/wiesehahn/MuEuCAP/blob/master/raw_data/img/MDLDT04_1_xmp_e.jpg?raw=true")
 ```
 
 
-#### after {-}
+### after {-}
 ```{r, out.width = "100%", fig.cap="Binary Black and White Image after processing"}
-knitr::include_graphics(here("output_data/img/MDLDT04_1_xmp_e_T.jpg"))
+knitr::include_graphics("https://github.com/wiesehahn/MuEuCAP/blob/master/output_data/img/MDLDT04_1_xmp_e_T.jpg?raw=true")
 ```
 
-### Numerical Results
+## Numerical Results
 
 ```{r read.data, message=FALSE, warning=FALSE}
 results_MDL <- read_csv(here("output_data/doc/hemiphotos_results_MDL.csv"))
@@ -131,25 +124,25 @@ colscale <- scale_colour_manual(name = "grp",values = myColors)
 ```
 
 
-#### Output table from Hemispherical_2.0
+### Output table from Hemispherical_2.0
 
-```{r table, message=FALSE, warning=FALSE}
+```{r table, message=FALSE, warning=FALSE, fig.cap="example data from output of hemispherical_2.0 processing"}
 head(hemi) %>% 
   select(-city, -cluster, -plot) %>%
   kable(escape = F) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 12, fixed_thead = T) 
 ```
 
-#### Simple Analysis Example {.tabset .tabset-pills}
+### Simple Analysis Example {.tabset .tabset-pills}
 
 Output data can be analyzed and plotted by city and cluster for example. 
 
 
-##### Average gap fraction per city and cluster
+#### Average gap fraction per cluster{-}
 
 The gap fraction is a metric for the openness of the plots, hence plots in the city or in forested sites should have lower gap fractions than agricultural dominated sites  
 
-```{r plot.gapfraction, message=FALSE, warning=FALSE}
+```{r plot.gapfraction, message=FALSE, warning=FALSE, fig.cap="gap fraction (%) per cluster averaged over all images and cities"}
 hemi %>%
   plot_ly(y = ~gap_fraction, 
           color = ~cluster,
@@ -157,10 +150,10 @@ hemi %>%
           type = "box")
 ```
 
-##### Average number of gaps per city and cluster
+#### Average number of gaps per cluster{-}
 
 The number of gaps might be an indicator for structural diversity. As this is dependend on a lot of factors this metric should be interpreted carefully.
-```{r plot.gapnumber, message=FALSE, warning=FALSE}
+```{r plot.gapnumber, message=FALSE, warning=FALSE, fig.cap="number of gaps per cluster averaged over all images and cities"}
 hemi %>%
   plot_ly(y = ~no_of_gaps, 
           color = ~cluster,
@@ -168,7 +161,7 @@ hemi %>%
           type = "box")
 ```
 
-#### Combination with bird data  {.tabset .tabset-pills}
+### Combination with bird data  {.tabset .tabset-pills}
 
 Do relations between bird count data and hemispherical photos exist?
 
@@ -198,9 +191,9 @@ hemibird <- merge(hemi.grouped, birddata, by=c("city","cluster", "plot"))
 
 ```
 
-##### Number of bird counts by gap fraction
+#### Number of bird counts by gap fraction{-}
 
-```{r plot.birdcount, message=FALSE, warning=FALSE}
+```{r plot.birdcount, message=FALSE, warning=FALSE, fig.cap="number of bird counts in relation to gap fraction, grouped by cluster"}
 
 hemibird %>%
   group_by(city, cluster, plot) %>%
@@ -223,9 +216,9 @@ hemibird %>%
 
 ```
 
-##### Number of bird species by number of gaps
+#### Number of bird species by number of gaps{-}
 
-```{r plot.birdspecies, message=FALSE, warning=FALSE}
+```{r plot.birdspecies, message=FALSE, warning=FALSE, fig.cap="number of observed bird species in relation to the number of gaps, grouped by cluster"}
 hemibird %>%
   group_by(city, cluster, plot) %>%
   summarise(no_of_species = n_distinct(English_Name),
@@ -247,7 +240,7 @@ hemibird %>%
 
 ```
 
-#### Combination with other data
+### Combination with other data
 
 In a further step this data can be merged with observations from the field or remote sensing data to enable a deeper anaylsis.
 
@@ -274,10 +267,10 @@ rsbird <- merge(rs, birddata_grouped, by=c("city","cluster", "plot"))
 
 ```
 
-##### Mean NDVI per cluster 
+#### Mean NDVI per cluster 
 (125m radius around plot center)  
 
-```{r plot.ndvi, message=FALSE, warning=FALSE}
+```{r plot.ndvi, message=FALSE, warning=FALSE, fig.cap="mean Normalized Difference Vegetation Index per cluster averaged over all images and cities"}
 rsbird %>%
   plot_ly(y = ~NDVI_mean, 
           color = ~cluster,
@@ -285,9 +278,9 @@ rsbird %>%
           type = "box")
 ```
 
-##### Number of bird species by mean NDVI
+#### Number of bird species by mean NDVI
 
-```{r plot.rs-birds, message=FALSE, warning=FALSE}
+```{r plot.rs-birds, message=FALSE, warning=FALSE, fig.cap="number of observed bird species in relation to the Nromalized Difference Vegetation Index"}
 rsbird %>%
   plot_ly(x= ~NDVI_mean, 
           y= ~no_of_species,

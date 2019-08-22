@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Map of inventory points</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-1.3.1/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4-compressed.js"></script>
+<script src="site_libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="site_libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-binding-2.0.2/leaflet.js"></script>
+<script src="site_libs/leaflet-providers-1.1.17/leaflet-providers.js"></script>
+<script src="site_libs/leaflet-providers-plugin-2.0.2/leaflet-providers-plugin.js"></script>
+<link href="site_libs/leaflet-easybutton-1.3.1/easy-button.css" rel="stylesheet" />
+<script src="site_libs/leaflet-easybutton-1.3.1/easy-button.js"></script>
+<script src="site_libs/leaflet-easybutton-1.3.1/EasyButton-binding.js"></script>
+<link href="site_libs/fontawesome-4.7.0/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/leaflet-markercluster-1.0.5/MarkerCluster.css" rel="stylesheet" />
+<link href="site_libs/leaflet-markercluster-1.0.5/MarkerCluster.Default.css" rel="stylesheet" />
+<script src="site_libs/leaflet-markercluster-1.0.5/leaflet.markercluster.js"></script>
+<script src="site_libs/leaflet-markercluster-1.0.5/leaflet.markercluster.freezable.js"></script>
+<script src="site_libs/leaflet-markercluster-1.0.5/leaflet.markercluster.layersupport.js"></script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #ffffff; color: #1f1c1b; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #ffffff; color: #a0a0a0; border-right: 1px solid #a0a0a0; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #1f1c1b; background-color: #ffffff; }
+code > span.kw { color: #1f1c1b; font-weight: bold; } /* Keyword */
+code > span.dt { color: #0057ae; } /* DataType */
+code > span.dv { color: #b08000; } /* DecVal */
+code > span.bn { color: #b08000; } /* BaseN */
+code > span.fl { color: #b08000; } /* Float */
+code > span.cn { color: #aa5500; } /* Constant */
+code > span.ch { color: #924c9d; } /* Char */
+code > span.sc { color: #3daee9; } /* SpecialChar */
+code > span.st { color: #bf0303; } /* String */
+code > span.vs { color: #bf0303; } /* VerbatimString */
+code > span.ss { color: #ff5500; } /* SpecialString */
+code > span.im { color: #ff5500; } /* Import */
+code > span.co { color: #898887; } /* Comment */
+code > span.do { color: #607880; } /* Documentation */
+code > span.an { color: #ca60ca; } /* Annotation */
+code > span.cv { color: #0095ff; } /* CommentVar */
+code > span.ot { color: #006e28; } /* Other */
+code > span.fu { color: #644a9b; } /* Function */
+code > span.va { color: #0057ae; } /* Variable */
+code > span.cf { color: #1f1c1b; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #1f1c1b; } /* Operator */
+code > span.bu { color: #644a9b; font-weight: bold; } /* BuiltIn */
+code > span.ex { color: #0095ff; font-weight: bold; } /* Extension */
+code > span.pp { color: #006e28; } /* Preprocessor */
+code > span.at { color: #0057ae; } /* Attribute */
+code > span.re { color: #0057ae; } /* RegionMarker */
+code > span.in { color: #b08000; } /* Information */
+code > span.wa { color: #bf0303; } /* Warning */
+code > span.al { color: #bf0303; font-weight: bold; } /* Alert */
+code > span.er { color: #bf0303; text-decoration: underline; } /* Error */
+code > span. { color: #1f1c1b; } /* Normal */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MuEuCAP</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">About</a>
+</li>
+<li>
+  <a href="map.html">Map</a>
+</li>
+<li>
+  <a href="hemiphotos_analysis.html">Hemispherical Photos</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Map of inventory points</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">usePackage &lt;-<span class="st"> </span><span class="cf">function</span>(p) 
+{
+  <span class="cf">if</span> (<span class="op">!</span><span class="kw">is.element</span>(p, <span class="kw">installed.packages</span>()[,<span class="dv">1</span>]))
+    <span class="kw">install.packages</span>(p, <span class="dt">dep =</span> <span class="ot">TRUE</span>)
+  <span class="kw">require</span>(p, <span class="dt">character.only =</span> <span class="ot">TRUE</span>)
+}
+
+<span class="kw">usePackage</span>(<span class="st">&quot;tidyverse&quot;</span>)
+<span class="kw">usePackage</span>(<span class="st">&quot;readxl&quot;</span>)
+<span class="kw">usePackage</span>(<span class="st">&quot;leaflet&quot;</span>)
+<span class="kw">usePackage</span>(<span class="st">&quot;here&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dat &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="dt">path=</span> <span class="kw">here</span>(<span class="st">&quot;raw_data/doc/point-list.xlsx&quot;</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">factpal &lt;-<span class="st"> </span><span class="kw">colorFactor</span>(<span class="kw">topo.colors</span>(<span class="dv">4</span>), dat<span class="op">$</span>Cluster)
+
+map &lt;-<span class="st"> </span><span class="kw">leaflet</span>() <span class="op">%&gt;%</span><span class="st"> </span>
+<span class="st">  </span>## Base groups
+<span class="st">  </span><span class="kw">addProviderTiles</span>(providers<span class="op">$</span>Stamen.TonerLite, <span class="dt">group =</span> <span class="st">&quot;Toner Lite&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">addProviderTiles</span>(providers<span class="op">$</span>Esri.WorldImagery, <span class="dt">group =</span> <span class="st">&quot;Satellite Imagery&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="kw">setView</span>(<span class="dt">lat =</span> <span class="kw">mean</span>(dat<span class="op">$</span>lat), <span class="dt">lng =</span> <span class="kw">mean</span>(dat<span class="op">$</span>lon), <span class="dt">zoom =</span> <span class="dv">5</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="kw">addLayersControl</span>(
+    <span class="dt">baseGroups =</span> <span class="kw">c</span>(<span class="st">&quot;Toner Lite&quot;</span>, <span class="st">&quot;Satellite Imagery&quot;</span>),
+    <span class="dt">options =</span> <span class="kw">layersControlOptions</span>(<span class="dt">collapsed =</span> <span class="ot">FALSE</span>)
+  ) <span class="op">%&gt;%</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="kw">addEasyButtonBar</span>(
+    <span class="kw">easyButton</span>(
+      <span class="dt">icon=</span><span class="st">&#39;fa-globe&#39;</span>, <span class="dt">title=</span><span class="st">&#39;Overview&#39;</span>,
+      <span class="dt">onClick=</span><span class="kw">JS</span>(<span class="st">&quot;function(btn, map){ map.setZoom(5);}&quot;</span>))
+  ) <span class="op">%&gt;%</span>
+<span class="st">  </span>
+<span class="st">  </span><span class="kw">addCircleMarkers</span>(
+    <span class="dt">data=</span>dat,
+    <span class="dt">lng=</span><span class="op">~</span>lon, <span class="dt">lat =</span> <span class="op">~</span>lat,
+    <span class="dt">label=</span><span class="op">~</span><span class="kw">as.character</span>(Point_ID),
+    <span class="dt">popup =</span> <span class="kw">paste</span>(<span class="st">&quot;City: &quot;</span>, <span class="kw">as.character</span>(dat<span class="op">$</span>City), <span class="st">&quot;&lt;br/&gt;&quot;</span>,
+                  <span class="st">&quot;Clustr: &quot;</span>, <span class="kw">as.character</span>(dat<span class="op">$</span>Cluster), <span class="st">&quot;&lt;br/&gt;&quot;</span>,
+                  <span class="st">&quot;Plot: &quot;</span>, <span class="kw">as.character</span>(dat<span class="op">$</span>Plot), <span class="st">&quot;&lt;br/&gt;&quot;</span>,
+                  <span class="st">&quot;Longitude: &quot;</span>, (dat<span class="op">$</span>lon), <span class="st">&quot;&lt;br/&gt;&quot;</span>,
+                  <span class="st">&quot;Latitude: &quot;</span>, (dat<span class="op">$</span>lat)),
+    <span class="dt">radius =</span> <span class="dv">6</span>,
+    <span class="dt">stroke =</span> T,
+    <span class="dt">weight =</span> <span class="dv">2</span>,
+    <span class="dt">fill =</span> <span class="ot">TRUE</span>,
+    <span class="dt">fillColor =</span> <span class="op">~</span><span class="kw">factpal</span>(Cluster),
+    <span class="dt">fillOpacity =</span> <span class="fl">0.8</span>,
+    <span class="dt">color=</span> <span class="st">&quot;black&quot;</span>,
+    <span class="dt">opacity =</span> <span class="fl">0.5</span>,
+    <span class="dt">clusterOptions =</span> <span class="kw">markerClusterOptions</span>(
+      <span class="dt">iconCreateFunction =</span><span class="kw">JS</span>(<span class="st">&quot;function(cluster) {</span>
+<span class="st">                             return new L.DivIcon({</span>
+<span class="st">                             html: &#39;&lt;div style=</span><span class="ch">\&quot;</span><span class="st">background-color:rgba(249,231,33,0.9)</span><span class="ch">\&quot;</span><span class="st">&gt;&lt;span&gt;&#39; + cluster.getChildCount() + &#39;&lt;/div&gt;&lt;span&gt;&#39;,</span>
+<span class="st">                             className: &#39;marker-cluster&#39;</span>
+<span class="st">                             });}&quot;</span>),
+      <span class="dt">disableClusteringAtZoom =</span> <span class="dv">13</span>,
+      <span class="dt">spiderfyOnMaxZoom =</span> F,
+      <span class="dt">showCoverageOnHover =</span> T
+    )
+  )
+
+
+
+map</code></pre></div>
+<div id="htmlwidget-d4e665e299b0b44d5dd5" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d4e665e299b0b44d5dd5">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Stamen.TonerLite",null,"Toner Lite",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addProviderTiles","args":["Esri.WorldImagery",null,"Satellite Imagery",{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addLayersControl","args":[["Toner Lite","Satellite Imagery"],[],{"collapsed":false,"autoZIndex":true,"position":"topright"}]},{"method":"addEasyButtonBar","args":[[{"icon":"fa-globe","title":"Overview","onClick":"function(btn, map){ map.setZoom(5);}","position":"topleft"}],"topleft",null]},{"method":"addCircleMarkers","args":[[16.44273163,16.44051712,16.43833852,16.43636587,16.43599712,16.43907689,16.43868029,16.44118763,16.44224611,16.443468,16.48574252,16.48524615,16.48412789,16.4842532,16.48399781,16.48129549,16.47887883,16.47752716,16.48823644,16.48828669,16.42959513,16.43051875,16.43026672,16.4297866,16.4322251,16.43533719,16.42782156,16.42524261,16.42332133,16.42082578,16.47573223,16.47284787,16.47036791,16.47085896,16.47320379,16.47555786,16.47875857,16.48175876,16.48291414,16.48005226,21.98327781,21.98314262,21.98578152,21.98852983,21.99047154,21.99329845,21.99533112,21.99512016,21.9919433,21.98756778,22.00778605,22.01049647,22.01017154,22.00755791,22.01269594,22.01536916,22.01577581,22.0173852,22.0189954,22.01731607,21.95411016,21.95786111,21.95564751,21.95779811,21.95520902,21.9581585,21.95502359,21.95567067,21.95763185,21.9531524,21.96075906,21.96211176,21.96276866,21.96348637,21.96441171,21.9618026,21.96367874,21.96528316,21.96786705,21.95953607,12.46600323,12.46346567,12.46587068,12.46591891,12.4679394,12.47045939,12.4681097,12.46805172,12.47038614,12.46149632,12.44864447,12.4488671,12.4509614,12.45502471,12.45133541,12.45395906,12.45618833,12.44932756,12.45019748,12.45294697,12.43879794,12.44125087,12.43567671,12.43341572,12.4314006,12.43371746,12.43661391,12.43919067,12.44162463,12.44428193,12.47754564,12.47912588,12.48133322,12.48165022,12.47831672,12.48080484,12.48300092,12.48524804,12.48766188,12.48376562],[97.65343342,97.65463959,97.65380401,97.65252861,97.64998345,97.64820829,97.65101365,97.65065307,97.64811182,97.64990571,97.66536349,97.66291867,97.66076299,97.65809442,97.66748299,97.66720382,97.66696778,97.66914073,97.6695246,97.66695984,97.66044706,97.66250446,97.6649558,97.6687275,97.66816586,97.66746379,97.6706611,97.67085052,97.67244716,97.67265097,97.62164076,97.62211417,97.62247865,97.62554242,97.62633415,97.62495639,97.62389044,97.62361756,97.62123019,97.62075013,96.08115,96.08427872,96.08449313,96.08313066,96.08154728,96.08180338,96.08029401,96.08357367,96.08487159,96.07977836,96.10504577,96.1051583,96.10765666,96.10848367,96.10840612,96.10801917,96.10559617,96.10681989,96.1081061,96.11072971,96.09896521,96.09435843,96.09422202,96.09626387,96.09625008,96.09179117,96.100151,96.09249437,96.09969153,96.09595862,96.17292918,96.17072053,96.16920365,96.16756569,96.16609106,96.17496504,96.17552746,96.17708681,96.1785989,96.16998318,98.61404125,98.61216958,98.6115343,98.60854546,98.60776653,98.60954517,98.61031247,98.61283239,98.61232655,98.6103925,98.5773872,98.57418586,98.57496917,98.57702903,98.57229683,98.5719676,98.57218333,98.57981263,98.58217176,98.5760104,98.59559996,98.59708081,98.59462414,98.59517758,98.59650969,98.59761048,98.59778731,98.59863853,98.60054052,98.59859549,98.6111892,98.61311098,98.61308428,98.62146005,98.62735408,98.62718674,98.62679205,98.62771754,98.62860463,98.62222753],6,null,null,{"interactive":true,"className":"","stroke":true,"color":"black","weight":2,"opacity":0.5,"fill":true,"fillColor":["#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#FFFF00","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#00E5FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#4C00FF","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D","#00FF4D"],"fillOpacity":0.8},{"showCoverageOnHover":true,"zoomToBoundsOnClick":true,"spiderfyOnMaxZoom":false,"removeOutsideVisibleBounds":true,"spiderLegPolylineOptions":{"weight":1.5,"color":"#222","opacity":0.5},"freezeAtZoom":false,"iconCreateFunction":"function(cluster) {\n                             return new L.DivIcon({\n                             html: '<div style=\"background-color:rgba(249,231,33,0.9)\"><span>' + cluster.getChildCount() + '<\/div><span>',\n                             className: 'marker-cluster'\n                             });}","disableClusteringAtZoom":13},null,["City:  MAW <br/> Clustr:  UC <br/> Plot:  1 <br/> Longitude:  97.65343342 <br/> Latitude:  16.44273163","City:  MAW <br/> Clustr:  UC <br/> Plot:  2 <br/> Longitude:  97.65463959 <br/> Latitude:  16.44051712","City:  MAW <br/> Clustr:  UC <br/> Plot:  3 <br/> Longitude:  97.65380401 <br/> Latitude:  16.43833852","City:  MAW <br/> Clustr:  UC <br/> Plot:  4 <br/> Longitude:  97.65252861 <br/> Latitude:  16.43636587","City:  MAW <br/> Clustr:  UC <br/> Plot:  5 <br/> Longitude:  97.64998345 <br/> Latitude:  16.43599712","City:  MAW <br/> Clustr:  UC <br/> Plot:  6 <br/> Longitude:  97.64820829 <br/> Latitude:  16.43907689","City:  MAW <br/> Clustr:  UC <br/> Plot:  7 <br/> Longitude:  97.65101365 <br/> Latitude:  16.43868029","City:  MAW <br/> Clustr:  UC <br/> Plot:  8 <br/> Longitude:  97.65065307 <br/> Latitude:  16.44118763","City:  MAW <br/> Clustr:  UC <br/> Plot:  9 <br/> Longitude:  97.64811182 <br/> Latitude:  16.44224611","City:  MAW <br/> Clustr:  UC <br/> Plot:  10 <br/> Longitude:  97.64990571 <br/> Latitude:  16.443468","City:  MAW <br/> Clustr:  RP <br/> Plot:  1 <br/> Longitude:  97.66536349 <br/> Latitude:  16.48574252","City:  MAW <br/> Clustr:  RP <br/> Plot:  2 <br/> Longitude:  97.66291867 <br/> Latitude:  16.48524615","City:  MAW <br/> Clustr:  RP <br/> Plot:  3 <br/> Longitude:  97.66076299 <br/> Latitude:  16.48412789","City:  MAW <br/> Clustr:  RP <br/> Plot:  4 <br/> Longitude:  97.65809442 <br/> Latitude:  16.4842532","City:  MAW <br/> Clustr:  RP <br/> Plot:  5 <br/> Longitude:  97.66748299 <br/> Latitude:  16.48399781","City:  MAW <br/> Clustr:  RP <br/> Plot:  6 <br/> Longitude:  97.66720382 <br/> Latitude:  16.48129549","City:  MAW <br/> Clustr:  RP <br/> Plot:  7 <br/> Longitude:  97.66696778 <br/> Latitude:  16.47887883","City:  MAW <br/> Clustr:  RP <br/> Plot:  8 <br/> Longitude:  97.66914073 <br/> Latitude:  16.47752716","City:  MAW <br/> Clustr:  RP <br/> Plot:  9 <br/> Longitude:  97.6695246 <br/> Latitude:  16.48823644","City:  MAW <br/> Clustr:  RP <br/> Plot:  10 <br/> Longitude:  97.66695984 <br/> Latitude:  16.48828669","City:  MAW <br/> Clustr:  MH <br/> Plot:  1 <br/> Longitude:  97.66044706 <br/> Latitude:  16.42959513","City:  MAW <br/> Clustr:  MH <br/> Plot:  2 <br/> Longitude:  97.66250446 <br/> Latitude:  16.43051875","City:  MAW <br/> Clustr:  MH <br/> Plot:  3 <br/> Longitude:  97.6649558 <br/> Latitude:  16.43026672","City:  MAW <br/> Clustr:  MH <br/> Plot:  4 <br/> Longitude:  97.6687275 <br/> Latitude:  16.4297866","City:  MAW <br/> Clustr:  MH <br/> Plot:  5 <br/> Longitude:  97.66816586 <br/> Latitude:  16.4322251","City:  MAW <br/> Clustr:  MH <br/> Plot:  6 <br/> Longitude:  97.66746379 <br/> Latitude:  16.43533719","City:  MAW <br/> Clustr:  MH <br/> Plot:  7 <br/> Longitude:  97.6706611 <br/> Latitude:  16.42782156","City:  MAW <br/> Clustr:  MH <br/> Plot:  8 <br/> Longitude:  97.67085052 <br/> Latitude:  16.42524261","City:  MAW <br/> Clustr:  MH <br/> Plot:  9 <br/> Longitude:  97.67244716 <br/> Latitude:  16.42332133","City:  MAW <br/> Clustr:  MH <br/> Plot:  10 <br/> Longitude:  97.67265097 <br/> Latitude:  16.42082578","City:  MAW <br/> Clustr:  DT <br/> Plot:  1 <br/> Longitude:  97.62164076 <br/> Latitude:  16.47573223","City:  MAW <br/> Clustr:  DT <br/> Plot:  2 <br/> Longitude:  97.62211417 <br/> Latitude:  16.47284787","City:  MAW <br/> Clustr:  DT <br/> Plot:  3 <br/> Longitude:  97.62247865 <br/> Latitude:  16.47036791","City:  MAW <br/> Clustr:  DT <br/> Plot:  4 <br/> Longitude:  97.62554242 <br/> Latitude:  16.47085896","City:  MAW <br/> Clustr:  DT <br/> Plot:  5 <br/> Longitude:  97.62633415 <br/> Latitude:  16.47320379","City:  MAW <br/> Clustr:  DT <br/> Plot:  6 <br/> Longitude:  97.62495639 <br/> Latitude:  16.47555786","City:  MAW <br/> Clustr:  DT <br/> Plot:  7 <br/> Longitude:  97.62389044 <br/> Latitude:  16.47875857","City:  MAW <br/> Clustr:  DT <br/> Plot:  8 <br/> Longitude:  97.62361756 <br/> Latitude:  16.48175876","City:  MAW <br/> Clustr:  DT <br/> Plot:  9 <br/> Longitude:  97.62123019 <br/> Latitude:  16.48291414","City:  MAW <br/> Clustr:  DT <br/> Plot:  10 <br/> Longitude:  97.62075013 <br/> Latitude:  16.48005226","City:  MDL <br/> Clustr:  DT <br/> Plot:  1 <br/> Longitude:  96.08115 <br/> Latitude:  21.98327781","City:  MDL <br/> Clustr:  DT <br/> Plot:  2 <br/> Longitude:  96.08427872 <br/> Latitude:  21.98314262","City:  MDL <br/> Clustr:  DT <br/> Plot:  3 <br/> Longitude:  96.08449313 <br/> Latitude:  21.98578152","City:  MDL <br/> Clustr:  DT <br/> Plot:  4 <br/> Longitude:  96.08313066 <br/> Latitude:  21.98852983","City:  MDL <br/> Clustr:  DT <br/> Plot:  5 <br/> Longitude:  96.08154728 <br/> Latitude:  21.99047154","City:  MDL <br/> Clustr:  DT <br/> Plot:  6 <br/> Longitude:  96.08180338 <br/> Latitude:  21.99329845","City:  MDL <br/> Clustr:  DT <br/> Plot:  7 <br/> Longitude:  96.08029401 <br/> Latitude:  21.99533112","City:  MDL <br/> Clustr:  DT <br/> Plot:  8 <br/> Longitude:  96.08357367 <br/> Latitude:  21.99512016","City:  MDL <br/> Clustr:  DT <br/> Plot:  9 <br/> Longitude:  96.08487159 <br/> Latitude:  21.9919433","City:  MDL <br/> Clustr:  DT <br/> Plot:  10 <br/> Longitude:  96.07977836 <br/> Latitude:  21.98756778","City:  MDL <br/> Clustr:  MH <br/> Plot:  1 <br/> Longitude:  96.10504577 <br/> Latitude:  22.00778605","City:  MDL <br/> Clustr:  MH <br/> Plot:  2 <br/> Longitude:  96.1051583 <br/> Latitude:  22.01049647","City:  MDL <br/> Clustr:  MH <br/> Plot:  3 <br/> Longitude:  96.10765666 <br/> Latitude:  22.01017154","City:  MDL <br/> Clustr:  MH <br/> Plot:  4 <br/> Longitude:  96.10848367 <br/> Latitude:  22.00755791","City:  MDL <br/> Clustr:  MH <br/> Plot:  5 <br/> Longitude:  96.10840612 <br/> Latitude:  22.01269594","City:  MDL <br/> Clustr:  MH <br/> Plot:  6 <br/> Longitude:  96.10801917 <br/> Latitude:  22.01536916","City:  MDL <br/> Clustr:  MH <br/> Plot:  7 <br/> Longitude:  96.10559617 <br/> Latitude:  22.01577581","City:  MDL <br/> Clustr:  MH <br/> Plot:  8 <br/> Longitude:  96.10681989 <br/> Latitude:  22.0173852","City:  MDL <br/> Clustr:  MH <br/> Plot:  9 <br/> Longitude:  96.1081061 <br/> Latitude:  22.0189954","City:  MDL <br/> Clustr:  MH <br/> Plot:  10 <br/> Longitude:  96.11072971 <br/> Latitude:  22.01731607","City:  MDL <br/> Clustr:  UC <br/> Plot:  1 <br/> Longitude:  96.09896521 <br/> Latitude:  21.95411016","City:  MDL <br/> Clustr:  UC <br/> Plot:  2 <br/> Longitude:  96.09435843 <br/> Latitude:  21.95786111","City:  MDL <br/> Clustr:  UC <br/> Plot:  3 <br/> Longitude:  96.09422202 <br/> Latitude:  21.95564751","City:  MDL <br/> Clustr:  UC <br/> Plot:  4 <br/> Longitude:  96.09626387 <br/> Latitude:  21.95779811","City:  MDL <br/> Clustr:  UC <br/> Plot:  5 <br/> Longitude:  96.09625008 <br/> Latitude:  21.95520902","City:  MDL <br/> Clustr:  UC <br/> Plot:  6 <br/> Longitude:  96.09179117 <br/> Latitude:  21.9581585","City:  MDL <br/> Clustr:  UC <br/> Plot:  7 <br/> Longitude:  96.100151 <br/> Latitude:  21.95502359","City:  MDL <br/> Clustr:  UC <br/> Plot:  8 <br/> Longitude:  96.09249437 <br/> Latitude:  21.95567067","City:  MDL <br/> Clustr:  UC <br/> Plot:  9 <br/> Longitude:  96.09969153 <br/> Latitude:  21.95763185","City:  MDL <br/> Clustr:  UC <br/> Plot:  10 <br/> Longitude:  96.09595862 <br/> Latitude:  21.9531524","City:  MDL <br/> Clustr:  RP <br/> Plot:  1 <br/> Longitude:  96.17292918 <br/> Latitude:  21.96075906","City:  MDL <br/> Clustr:  RP <br/> Plot:  2 <br/> Longitude:  96.17072053 <br/> Latitude:  21.96211176","City:  MDL <br/> Clustr:  RP <br/> Plot:  3 <br/> Longitude:  96.16920365 <br/> Latitude:  21.96276866","City:  MDL <br/> Clustr:  RP <br/> Plot:  4 <br/> Longitude:  96.16756569 <br/> Latitude:  21.96348637","City:  MDL <br/> Clustr:  RP <br/> Plot:  5 <br/> Longitude:  96.16609106 <br/> Latitude:  21.96441171","City:  MDL <br/> Clustr:  RP <br/> Plot:  6 <br/> Longitude:  96.17496504 <br/> Latitude:  21.9618026","City:  MDL <br/> Clustr:  RP <br/> Plot:  7 <br/> Longitude:  96.17552746 <br/> Latitude:  21.96367874","City:  MDL <br/> Clustr:  RP <br/> Plot:  8 <br/> Longitude:  96.17708681 <br/> Latitude:  21.96528316","City:  MDL <br/> Clustr:  RP <br/> Plot:  9 <br/> Longitude:  96.1785989 <br/> Latitude:  21.96786705","City:  MDL <br/> Clustr:  RP <br/> Plot:  10 <br/> Longitude:  96.16998318 <br/> Latitude:  21.95953607","City:  MGZ <br/> Clustr:  UC <br/> Plot:  1 <br/> Longitude:  98.61404125 <br/> Latitude:  12.46600323","City:  MGZ <br/> Clustr:  UC <br/> Plot:  2 <br/> Longitude:  98.61216958 <br/> Latitude:  12.46346567","City:  MGZ <br/> Clustr:  UC <br/> Plot:  3 <br/> Longitude:  98.6115343 <br/> Latitude:  12.46587068","City:  MGZ <br/> Clustr:  UC <br/> Plot:  4 <br/> Longitude:  98.60854546 <br/> Latitude:  12.46591891","City:  MGZ <br/> Clustr:  UC <br/> Plot:  5 <br/> Longitude:  98.60776653 <br/> Latitude:  12.4679394","City:  MGZ <br/> Clustr:  UC <br/> Plot:  6 <br/> Longitude:  98.60954517 <br/> Latitude:  12.47045939","City:  MGZ <br/> Clustr:  UC <br/> Plot:  7 <br/> Longitude:  98.61031247 <br/> Latitude:  12.4681097","City:  MGZ <br/> Clustr:  UC <br/> Plot:  8 <br/> Longitude:  98.61283239 <br/> Latitude:  12.46805172","City:  MGZ <br/> Clustr:  UC <br/> Plot:  9 <br/> Longitude:  98.61232655 <br/> Latitude:  12.47038614","City:  MGZ <br/> Clustr:  UC <br/> Plot:  10 <br/> Longitude:  98.6103925 <br/> Latitude:  12.46149632","City:  MGZ <br/> Clustr:  MH <br/> Plot:  1 <br/> Longitude:  98.5773872 <br/> Latitude:  12.44864447","City:  MGZ <br/> Clustr:  MH <br/> Plot:  2 <br/> Longitude:  98.57418586 <br/> Latitude:  12.4488671","City:  MGZ <br/> Clustr:  MH <br/> Plot:  3 <br/> Longitude:  98.57496917 <br/> Latitude:  12.4509614","City:  MGZ <br/> Clustr:  MH <br/> Plot:  4 <br/> Longitude:  98.57702903 <br/> Latitude:  12.45502471","City:  MGZ <br/> Clustr:  MH <br/> Plot:  5 <br/> Longitude:  98.57229683 <br/> Latitude:  12.45133541","City:  MGZ <br/> Clustr:  MH <br/> Plot:  6 <br/> Longitude:  98.5719676 <br/> Latitude:  12.45395906","City:  MGZ <br/> Clustr:  MH <br/> Plot:  7 <br/> Longitude:  98.57218333 <br/> Latitude:  12.45618833","City:  MGZ <br/> Clustr:  MH <br/> Plot:  8 <br/> Longitude:  98.57981263 <br/> Latitude:  12.44932756","City:  MGZ <br/> Clustr:  MH <br/> Plot:  9 <br/> Longitude:  98.58217176 <br/> Latitude:  12.45019748","City:  MGZ <br/> Clustr:  MH <br/> Plot:  10 <br/> Longitude:  98.5760104 <br/> Latitude:  12.45294697","City:  MGZ <br/> Clustr:  DT <br/> Plot:  1 <br/> Longitude:  98.59559996 <br/> Latitude:  12.43879794","City:  MGZ <br/> Clustr:  DT <br/> Plot:  2 <br/> Longitude:  98.59708081 <br/> Latitude:  12.44125087","City:  MGZ <br/> Clustr:  DT <br/> Plot:  3 <br/> Longitude:  98.59462414 <br/> Latitude:  12.43567671","City:  MGZ <br/> Clustr:  DT <br/> Plot:  4 <br/> Longitude:  98.59517758 <br/> Latitude:  12.43341572","City:  MGZ <br/> Clustr:  DT <br/> Plot:  5 <br/> Longitude:  98.59650969 <br/> Latitude:  12.4314006","City:  MGZ <br/> Clustr:  DT <br/> Plot:  6 <br/> Longitude:  98.59761048 <br/> Latitude:  12.43371746","City:  MGZ <br/> Clustr:  DT <br/> Plot:  7 <br/> Longitude:  98.59778731 <br/> Latitude:  12.43661391","City:  MGZ <br/> Clustr:  DT <br/> Plot:  8 <br/> Longitude:  98.59863853 <br/> Latitude:  12.43919067","City:  MGZ <br/> Clustr:  DT <br/> Plot:  9 <br/> Longitude:  98.60054052 <br/> Latitude:  12.44162463","City:  MGZ <br/> Clustr:  DT <br/> Plot:  10 <br/> Longitude:  98.59859549 <br/> Latitude:  12.44428193","City:  MGZ <br/> Clustr:  RP <br/> Plot:  1 <br/> Longitude:  98.6111892 <br/> Latitude:  12.47754564","City:  MGZ <br/> Clustr:  RP <br/> Plot:  2 <br/> Longitude:  98.61311098 <br/> Latitude:  12.47912588","City:  MGZ <br/> Clustr:  RP <br/> Plot:  3 <br/> Longitude:  98.61308428 <br/> Latitude:  12.48133322","City:  MGZ <br/> Clustr:  RP <br/> Plot:  4 <br/> Longitude:  98.62146005 <br/> Latitude:  12.48165022","City:  MGZ <br/> Clustr:  RP <br/> Plot:  5 <br/> Longitude:  98.62735408 <br/> Latitude:  12.47831672","City:  MGZ <br/> Clustr:  RP <br/> Plot:  6 <br/> Longitude:  98.62718674 <br/> Latitude:  12.48080484","City:  MGZ <br/> Clustr:  RP <br/> Plot:  7 <br/> Longitude:  98.62679205 <br/> Latitude:  12.48300092","City:  MGZ <br/> Clustr:  RP <br/> Plot:  8 <br/> Longitude:  98.62771754 <br/> Latitude:  12.48524804","City:  MGZ <br/> Clustr:  RP <br/> Plot:  9 <br/> Longitude:  98.62860463 <br/> Latitude:  12.48766188","City:  MGZ <br/> Clustr:  RP <br/> Plot:  10 <br/> Longitude:  98.62222753 <br/> Latitude:  12.48376562"],null,["MAWUC01","MAWUC02","MAWUC03","MAWUC04","MAWUC05","MAWUC06","MAWUC07","MAWUC08","MAWUC09","MAWUC10","MAWRP01","MAWRP02","MAWRP03","MAWRP04","MAWRP05","MAWRP06","MAWRP07","MAWRP08","MAWRP09","MAWRP10","MAWMH01","MAWMH02","MAWMH03","MAWMH04","MAWMH05","MAWMH06","MAWMH07","MAWMH08","MAWMH09","MAWMH10","MAWDT01","MAWDT02","MAWDT03","MAWDT04","MAWDT05","MAWDT06","MAWDT07","MAWDT08","MAWDT09","MAWDT10","MDLDT01","MDLDT02","MDLDT03","MDLDT04","MDLDT05","MDLDT06","MDLDT07","MDLDT08","MDLDT09","MDLDT10","MDLMH01","MDLMH02","MDLMH03","MDLMH04","MDLMH05","MDLMH06","MDLMH07","MDLMH08","MDLMH09","MDLMH10","MDLUC01","MDLUC02","MDLUC03","MDLUC04","MDLUC05","MDLUC06","MDLUC07","MDLUC08","MDLUC09","MDLUC10","MDLRP01","MDLRP02","MDLRP03","MDLRP04","MDLRP05","MDLRP06","MDLRP07","MDLRP08","MDLRP09","MDLRP10","MGZUC01","MGZUC02","MGZUC03","MGZUC04","MGZUC05","MGZUC06","MGZUC07","MGZUC08","MGZUC09","MGZUC10","MGZMH01","MGZMH02","MGZMH03","MGZMH04","MGZMH05","MGZMH06","MGZMH07","MGZMH08","MGZMH09","MGZMH10","MGZDT01","MGZDT02","MGZDT03","MGZDT04","MGZDT05","MGZDT06","MGZDT07","MGZDT08","MGZDT09","MGZDT10","MGZRP01","MGZRP02","MGZRP03","MGZRP04","MGZRP05","MGZRP06","MGZRP07","MGZRP08","MGZRP09","MGZRP10"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"setView":[[16.9656896110833,97.4559855149167],5,[]],"limits":{"lat":[12.4314006,22.0189954],"lng":[96.07977836,98.62860463]}},"evals":["calls.3.args.0.0.onClick","calls.4.args.6.iconCreateFunction"],"jsHooks":[]}</script>
+
+&nbsp;
+<hr />
+<p style="text-align: center;"><span style="color: #808080;"><em>A work by Jens Wiesehahn</em></span></p>
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Add font awesome icons -->
+<p style="text-align: center;">
+	<a href="mailto:wiesehahn.jens@gmail.com" class="fa fa-envelope"></a>
+    <a href="https://github.com/wiesehahn/" class="fa fa-github"></a>
+</p>
+
+&nbsp;
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+name: "MuEuCAP"
+output_dir: "../docs"
+navbar:
+  title: "MuEuCAP"
+  left:
+    - text: "About"
+      href: index.html
+    - text: "Map"
+      href: map.html
+    - text: "Hemispherical Photos"
+      href: hemiphotos_analysis.html
+output: 
+  html_document:
+    highlight: kate
+    fig_caption: yes
+    theme: paper
+    code_folding: hide
+    toc: true
+    toc_float: true
+    collapsed: false 
+    number_sections: true
+    css: style.css
+    includes:
+      after_body: footer.html

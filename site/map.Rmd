@@ -1,0 +1,79 @@
+---
+title: "Map of inventory points"
+---
+
+```{r, message=FALSE, warning=FALSE}
+usePackage <- function(p) 
+{
+  if (!is.element(p, installed.packages()[,1]))
+    install.packages(p, dep = TRUE)
+  require(p, character.only = TRUE)
+}
+
+usePackage("tidyverse")
+usePackage("readxl")
+usePackage("leaflet")
+usePackage("here")
+```
+
+```{r, message=FALSE, warning=FALSE}
+dat <- read_excel(path= here("raw_data/doc/point-list.xlsx"))
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+factpal <- colorFactor(topo.colors(4), dat$Cluster)
+
+map <- leaflet() %>% 
+  ## Base groups
+  addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Satellite Imagery") %>%
+  
+  setView(lat = mean(dat$lat), lng = mean(dat$lon), zoom = 5) %>%
+  
+  addLayersControl(
+    baseGroups = c("Toner Lite", "Satellite Imagery"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  
+  addEasyButtonBar(
+    easyButton(
+      icon='fa-globe', title='Overview',
+      onClick=JS("function(btn, map){ map.setZoom(5);}"))
+  ) %>%
+  
+  addCircleMarkers(
+    data=dat,
+    lng=~lon, lat = ~lat,
+    label=~as.character(Point_ID),
+    popup = paste("City: ", as.character(dat$City), "<br/>",
+                  "Clustr: ", as.character(dat$Cluster), "<br/>",
+                  "Plot: ", as.character(dat$Plot), "<br/>",
+                  "Longitude: ", (dat$lon), "<br/>",
+                  "Latitude: ", (dat$lat)),
+    radius = 6,
+    stroke = T,
+    weight = 2,
+    fill = TRUE,
+    fillColor = ~factpal(Cluster),
+    fillOpacity = 0.8,
+    color= "black",
+    opacity = 0.5,
+    clusterOptions = markerClusterOptions(
+      iconCreateFunction =JS("function(cluster) {
+                             return new L.DivIcon({
+                             html: '<div style=\"background-color:rgba(249,231,33,0.9)\"><span>' + cluster.getChildCount() + '</div><span>',
+                             className: 'marker-cluster'
+                             });}"),
+      disableClusteringAtZoom = 13,
+      spiderfyOnMaxZoom = F,
+      showCoverageOnHover = T
+    )
+  )
+
+
+
+map
+
+```
+
