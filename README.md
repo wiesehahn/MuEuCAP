@@ -8,20 +8,21 @@ project website: https://wiesehahn.github.io/MuEuCAP/
 ## Folder structure
 
 ```
-|--raw_data
-    |--doc
-      |--plotdata.csv
-    |--img
-      |--plotimage.img
+|--docs
+    |--index.html
 |--output_data
     |--doc
       |--plotresults.csv
     |--img
       |--plotimage_transformed.img
-|--rmd
-    |--report.Rmd
-|--docs
-    |--index.html
+|--raw_data
+    |--doc
+      |--plotdata.csv
+    |--img
+      |--plotimage.img
+|--site
+    |--index.Rmd
+    |--_site.yml
 |--name_of_project.Rproj
 |--README.md
 ```
