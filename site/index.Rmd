@@ -1,13 +1,18 @@
 ---
 title: "MuEuCAP"
+output: 
+  html_document:
+    toc: false
 ---
+
+```{r,  echo=FALSE}
+knitr::include_graphics("https://static.wixstatic.com/media/cec980_ebb22305eb9b40baa1fad5967f7ad8c2~mv2.jpg/v1/crop/x_18,y_0,w_387,h_118/fill/w_164,h_50,al_c,q_80,usm_0.66_1.00_0.01/cec980_ebb22305eb9b40baa1fad5967f7ad8c2~mv2.webp")
+```
 
 a joint EU/Myanmar project, which is 
 
-### MuEuCAP{-}
 
 #### 'Supporting the modernisation, accessibility, and internationalisation of environmental protection in Myanmar's higher education sector'{-}
 
 
------------------
 
