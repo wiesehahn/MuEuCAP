@@ -1,5 +1,8 @@
 ---
 title: "Map of inventory points"
+output: 
+  html_document:
+    toc: false
 ---
 
 ```{r, message=FALSE, warning=FALSE}
