@@ -86,26 +86,28 @@ For processing the images with ImageJ and the hemispherical_2.0 macro the images
 
 ### before {-}
 ```{r, out.width = "100%", fig.cap="RGB-Image in flat projection as taken in the field"}
-knitr::include_graphics("https://github.com/wiesehahn/MuEuCAP/blob/master/raw_data/img/MDLDT04_1_xmp_e.jpg?raw=true")
+knitr::include_graphics("https://github.com/wiesehahn/MuEuCAP/blob/master/raw_data/img/MAWDT04_1_xmp_e_2019-08-12_14.jpg?raw=true")
 ```
 
 
 ### after {-}
 ```{r, out.width = "100%", fig.cap="Binary Black and White Image after processing"}
-knitr::include_graphics("https://github.com/wiesehahn/MuEuCAP/blob/master/output_data/img/MDLDT04_1_xmp_e_T.jpg?raw=true")
+knitr::include_graphics("https://github.com/wiesehahn/MuEuCAP/blob/master/output_data/img/MAWDT04_1_xmp_e_2019-08-12_14_T.jpg?raw=true")
 ```
 
 ## Numerical Results
 
 ```{r read.data, message=FALSE, warning=FALSE}
-results_MDL <- read_csv(here("output_data/doc/hemiphotos_results_MDL.csv"))
+# results_MDL <- read_csv(here("output_data/doc/hemiphotos_results_MDL.csv"))
+# 
+# results_MAW <- read_csv(here("output_data/doc/hemiphotos_results_MAW.csv"))
+# 
+# results_MGZ <- read_csv(here("output_data/doc/hemiphotos_results_MGZ.csv"))
+# 
+# # merge data
+# hemi <- bind_rows(results_MDL, results_MAW, results_MGZ)
 
-results_MAW <- read_csv(here("output_data/doc/hemiphotos_results_MAW.csv"))
-
-results_MGZ <- read_csv(here("output_data/doc/hemiphotos_results_MGZ.csv"))
-
-# merge data
-hemi <- bind_rows(results_MDL, results_MAW, results_MGZ)
+hemi <- read.csv(here("output_data/doc/hemifotos.csv"), sep=";", dec=".")
 
 # get plot data from image name
 hemi <- hemi %>%
@@ -128,7 +130,7 @@ colscale <- scale_colour_manual(name = "grp",values = myColors)
 
 ```{r table, message=FALSE, warning=FALSE, fig.cap="example data from output of hemispherical_2.0 processing"}
 head(hemi) %>% 
-  select(-city, -cluster, -plot) %>%
+  select(-Point_ID, -city, -cluster, -plot) %>%
   kable(escape = F) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), font_size = 12, fixed_thead = T) 
 ```
