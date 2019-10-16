@@ -4,7 +4,7 @@ navbar:
   title: "MuEuCAP"
   left:
     - text: "About"
-      href: about.html
+      href: index.html
     - text: "Map"
       href: map.html
     - text: "Hemispherical Photos"
